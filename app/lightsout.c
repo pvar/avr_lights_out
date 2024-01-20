@@ -1,28 +1,32 @@
-/*
- *
- */
-
 #include <util/delay.h>
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define TIME_TO_CHANGE 65500
+void mcu_init (void) {
+        // speaker and led matrix rows (through transistor array)
+        DDRC = 0b00111111;
+        // button matrix rows, mode leds and main button
+        DDRB = 0b11011111;
+        // this will be changing, depending on wether
+        // we read the buttons or drive the leds
+        DDRD = 0b11111111;
 
-uint8_t init;
-uint8_t ledRow[5];
+        // disable analog to digital converter
+        ADCSRA = ADCSRA & ~(1<<ADEN);
 
-int main(void)
-{
-        // turn all LEDs off
-        uint8_t i;
-        for (i = 0; i < 5; i++) {
-                ledRow[i] = 0;
-        }
+        // completely shutdown analog to digital converter
+        PRR = PRR | (1<<PRADC);
 
-        init = 1;
+        // turn off analog comparator
+        ACSR = ACSR | (1<<ACD);
+        ACSR = ACSR & ~(1<<ACBG);
 
-        // loop forever
-        while(1) {
-        }
+        // select and enable sleep mode
+        //ldi tmp, (1<<SE)
+        //out MCUCR, tmp
+}
+
+int main(void) {
+        mcu_init();
 }
