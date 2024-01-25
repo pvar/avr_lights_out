@@ -6,7 +6,6 @@ AVRSIZE = avr-size
 
 APP = lightsout
 LIB =
-DEP =
 
 DEV = atmega328
 CLK = 8000000
@@ -16,20 +15,18 @@ TUN = -O1 -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invar
 
 CFLAGS = -mmcu=$(DEV) -DF_CPU=$(CLK) $(TUN) $(STD) $(WRN)
 
+all: $(APP)
 
-all:	$(APP)
-
-$(LIB): $(DEP)
+$(LIB):
+	@echo Building library: $@
 
 $(APP): $(LIB)
-	@echo Building $@
+	@echo Building program: $@
 	@$(CC) $(CFLAGS) -o obj/$@.o app/$@.c
 	@$(AVRSIZE) obj/$@.o
 	@$(OBJCOPY) -j .text  -j .data -O ihex obj/$@.o $@.hex
 	@$(OBJDUMP) -d -S obj/$@.o >obj/$@.lss
 
 .PHONY:	clean
-
 clean:
-	rm -f *.hex obj/*.o obj/*.lss
-
+	rm *.hex obj/*.o obj/*.lss
