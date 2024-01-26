@@ -1,14 +1,4 @@
-#include <stdlib.h>
-#include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-
-void mcu_init (void);
-void app_init (void);
-void testLedMatrix(void);
-
-#define COLS 8
-#define ROWS 5
+#include "lightsout.h"
 
 // Frame buffers for the LED matrix
 uint8_t currentState[COLS][ROWS];
