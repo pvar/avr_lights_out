@@ -1,6 +1,5 @@
 #include "lightsout.h"
 
-// Frame buffers for the LED matrix
 uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
 
@@ -9,9 +8,44 @@ int main(void) {
         app_init();
 
         while(1) {
-                testLedMatrix();
+                ledMatrixPWM();
         }
 }
+
+void ledMatrixPWM(void) {
+        uint8_t row, col, step, tmpVal;
+
+        // set PORTD as output for driving the led matrix
+        DDRD = 0b11111111;
+
+        // scan rows
+        for (row = 0; row < 5; row++) {
+                // switch row after turning all columns off, to avoid ghosting
+                PORTD = 0;
+                PORTC = 1 << row;
+                // go through steps
+                for (step = 0; step < 228; step++) {
+                        // switch on/off every column of selected row
+                        // according to current step and brightness level
+                        tmpVal = 0b00000000;
+                        for (col = 0; col < 8; col++) {
+                                if (step < currentState[col][row]) {
+                                        tmpVal |= 1 << col;
+                                }
+                        }
+                        PORTD = tmpVal;
+                        // assuming that each iteration takes 5us,
+                        // we add 2us to reach desired period (~7us)
+                        _delay_us(2);
+                }
+        }
+
+        // we only had 2us, for the last step of the last row
+        // so, we have to add 5us to reach desired period (~7us)
+        _delay_us(5);
+        PORTC = 0;
+}
+
 
 void testLedMatrix(void) {
         for (int row = 0; row < 5; row++) {
@@ -28,7 +62,8 @@ void mcu_init (void) {
         // speaker and led matrix rows (through transistor array)
         DDRC = 0b00111111;
         // mode indicator, main button and button matrix rows
-        DDRB = 0b11011111;
+        DDRB = 0b11000000;
+        PORTB = 0b10000000;
         // this will be constantly changing
         // - input for reading the button matrix
         // - output for driving the led matrix
@@ -50,10 +85,10 @@ void mcu_init (void) {
 }
 
 void app_init (void) {
-        for (int x = 0; x < COLS; x++) {
-                for (int y = 0; y < ROWS; y++) {
-                        currentState[x][y] = 0;
-                        targetState[x][y] = 0;
+        for (int col = 0; col < COLS; col++) {
+                for (int row = 0; row < ROWS; row++) {
+                        currentState[col][row] = 0;
+                        targetState[col][row] = 0;
                 }
         }
 }
