@@ -3,12 +3,36 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+void mcu_init (void);
+void app_init (void);
+void testLedMatrix(void);
+
 #define COLS 8
 #define ROWS 5
 
 // Frame buffers for the LED matrix
 uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
+
+int main(void) {
+        mcu_init();
+        app_init();
+
+        while(1) {
+                testLedMatrix();
+        }
+}
+
+void testLedMatrix(void) {
+        for (int row = 0; row < 5; row++) {
+                PORTC = 1 << row;
+                for (int col = 0; col < 8; col++) {
+                        PORTD = 1 << col;
+                        _delay_ms(128);
+                }
+        }
+        PORTC = 0;
+}
 
 void mcu_init (void) {
         // speaker and led matrix rows (through transistor array)
@@ -42,11 +66,4 @@ void app_init (void) {
                         targetState[x][y] = 0;
                 }
         }
-}
-
-int main(void) {
-        mcu_init();
-        app_init();
-
-
 }
