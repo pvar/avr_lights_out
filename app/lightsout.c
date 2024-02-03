@@ -9,11 +9,11 @@ int main(void) {
         appInit();
 
         while(1) {
-                ledMatrixPWM();
+                updateLedMatrix();
         }
 }
 
-void ledMatrixPWM(void) {
+void updateLedMatrix(void) {
         uint8_t row, col, step, tmpVal;
 
         // set PORTD as output for driving the led matrix

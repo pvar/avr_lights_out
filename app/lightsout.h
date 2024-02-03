@@ -6,7 +6,7 @@
 void mcuInit (void);
 void appInit (void);
 void testLedMatrix(void);
-void ledMatrixPWM(void);
+void updateLedMatrix(void);
 
 #define COLS 8
 #define ROWS 5
