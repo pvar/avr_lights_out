@@ -8,9 +8,25 @@ int main(void) {
         mcuInit();
         appInit();
 
+        uint8_t sequencer = 0;
+
         while(1) {
+                sequencer++;
                 updateLedMatrix();
-                scanSwitchMatrix();
+                switch (sequencer) {
+                case 1:
+                        scanSwitchMatrix();
+                        break;
+                case 2:
+                        checkMainButton();
+                        break;
+                case 3:
+                        updateFrameBuffer();
+                        break;
+                case 4:
+                        checkGameState();
+                        sequencer = 0;
+                }
         }
 }
 
@@ -74,7 +90,7 @@ void scanSwitchMatrix(void) {
                 for (col = 0; col < 8; col++) {
                         if ((PINB & (1 << col)) == 0) {
                                 // the switch at row ROW and column COL is pressed
-                                toggleLedsAround(col, row);
+                                applyPatternOn(col, row);
                                 // ignore any other pressed switches for now
                                 exit = 1;
                                 break;
@@ -89,10 +105,28 @@ void scanSwitchMatrix(void) {
         }
 }
 
-void toggleLedsAround(uint8_t x, uint8_t y) {
+void applyPatternOn(uint8_t x, uint8_t y) {
         // TODO:
         // Apply one of three patterns around selected LED
         // modification will be applied on targetState[][]
+}
+
+void checkMainButton(void) {
+        // If game has ended and button was pressed,
+        // create new level in targetState[][]
+}
+
+void createNewLevel(void) {
+        // Create new level in targetState[][]
+}
+
+void updateFrameBuffer(void) {
+        // Update currentState[][] based on contents of targetState[][]
+}
+
+void checkGameState(void) {
+        // Check if game has ended -- all LEDS out!
+        // Play sound if user won
 }
 
 void testLedMatrix(void) {
