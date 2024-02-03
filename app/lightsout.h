@@ -3,8 +3,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-void mcu_init (void);
-void app_init (void);
+void mcuInit (void);
+void appInit (void);
 void testLedMatrix(void);
 void ledMatrixPWM(void);
 

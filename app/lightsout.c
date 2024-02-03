@@ -4,8 +4,8 @@ uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
 
 int main(void) {
-        mcu_init();
-        app_init();
+        mcuInit();
+        appInit();
 
         while(1) {
                 ledMatrixPWM();
@@ -58,7 +58,7 @@ void testLedMatrix(void) {
         PORTC = 0;
 }
 
-void mcu_init (void) {
+void mcuInit (void) {
         // speaker and led matrix rows (through transistor array)
         DDRC = 0b00111111;
         // mode indicator, main button and button matrix rows
@@ -84,7 +84,7 @@ void mcu_init (void) {
         //out MCUCR, tmp
 }
 
-void app_init (void) {
+void appInit (void) {
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {
                         currentState[col][row] = 0;
