@@ -16,7 +16,11 @@ int main(void) {
 void updateLedMatrix(void) {
         uint8_t row, col, step, tmpVal;
 
-        // set PORTD as output for driving the led matrix
+        // set first 5 pins to Hi-z state
+        DDRB  &= 0b11100000;
+        PORTB &= 0b11100000;
+
+        // set all pins as outputs for driving the led matrix
         DDRD = 0b11111111;
 
         // scan rows
@@ -24,6 +28,7 @@ void updateLedMatrix(void) {
                 // switch row after turning all columns off, to avoid ghosting
                 PORTD = 0;
                 PORTC = 1 << row;
+
                 // go through steps
                 for (step = 0; step < 228; step++) {
                         // switch on/off every column of selected row
@@ -35,6 +40,7 @@ void updateLedMatrix(void) {
                                 }
                         }
                         PORTD = tmpVal;
+
                         // assuming that each iteration takes 5us,
                         // we add 2us to reach desired period (~7us)
                         _delay_us(2);
