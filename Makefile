@@ -22,6 +22,7 @@ $(LIB):
 
 $(APP): $(LIB)
 	@echo Building program: $@
+	@mkdir -p obj
 	@$(CC) $(CFLAGS) -o obj/$@.o app/$@.c
 	@$(AVRSIZE) obj/$@.o
 	@$(OBJCOPY) -j .text  -j .data -O ihex obj/$@.o $@.hex
