@@ -7,6 +7,8 @@ void mcuInit (void);
 void appInit (void);
 void testLedMatrix(void);
 void updateLedMatrix(void);
+void scanSwitchMatrix(void);
+void toggleLedsAround(uint8_t x, uint8_t y);
 
 #define COLS 8
 #define ROWS 5

@@ -10,6 +10,7 @@ int main(void) {
 
         while(1) {
                 updateLedMatrix();
+                scanSwitchMatrix();
         }
 }
 
@@ -53,6 +54,46 @@ void updateLedMatrix(void) {
         PORTC = 0;
 }
 
+void scanSwitchMatrix(void) {
+        uint8_t row, col, exit = 0;
+
+        // set first 5 pins as outputs and enable pull-up resistors
+        // used for enabling/disabling switches in a row
+        PORTB |= 0b00011111;
+        DDRB  |= 0b00011111;
+
+        // set all pins as inputs and enable pull-up resistors
+        // used for reading state of switches in a row
+        PORTB = 0b11111111;
+        DDRD  = 0b00000000;
+
+        for (row = 0; row < 5; row++) {
+                // enable switches of row
+                PORTB &= ~(1 << row);
+
+                for (col = 0; col < 8; col++) {
+                        if ((PINB & (1 << col)) == 0) {
+                                // the switch at row ROW and column COL is pressed
+                                toggleLedsAround(col, row);
+                                // ignore any other pressed switches for now
+                                exit = 1;
+                                break;
+                        }
+                }
+
+                // disable switches of row
+                PORTB |= 1 << row;
+
+                if (exit)
+                    break;
+        }
+}
+
+void toggleLedsAround(uint8_t x, uint8_t y) {
+        // TODO:
+        // Apply one of three patterns around selected LED
+        // modification will be applied on targetState[][]
+}
 
 void testLedMatrix(void) {
         for (int row = 0; row < 5; row++) {
@@ -69,8 +110,8 @@ void mcuInit (void) {
         // speaker and led matrix rows (through transistor array)
         DDRC = 0b00111111;
         // mode indicator, main button and button matrix rows
-        DDRB = 0b11000000;
-        PORTB = 0b10000000;
+        DDRB  = 0b11000000;
+        PORTB = 0b11100000;
         // this will be constantly changing
         // - input for reading the button matrix
         // - output for driving the led matrix
