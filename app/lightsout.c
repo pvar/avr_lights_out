@@ -2,6 +2,7 @@
 
 uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
+uint8_t gammaValues[5];
 
 int main(void) {
         mcuInit();
@@ -85,6 +86,14 @@ void mcuInit (void) {
 }
 
 void appInit (void) {
+        // brightness levels for smooth fading
+        gammaValues[0] = 0;
+        gammaValues[1] = 1;
+        gammaValues[2] = 2;
+        gammaValues[3] = 4;
+        gammaValues[4] = 6;
+        gammaValues[5] = 9;
+
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {
                         currentState[col][row] = 0;

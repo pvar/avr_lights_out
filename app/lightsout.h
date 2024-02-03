@@ -27,6 +27,6 @@ MATRIX SCANNING TIMINGS:
                 steps: 228
                 time per step: ~7us
                 step frequency: ~142.5kHz
-                gamma corrected levels: 0, 1, 2, 4, 6, 9, 12, 16
+                gamma corrected levels: 0, 1, 2, 4, 6, 9
 
 */
