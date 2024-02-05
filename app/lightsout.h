@@ -13,7 +13,7 @@ void checkMainButton(void);
 void createNewLevel(void);
 void updateFrameBuffer(void);
 void checkGameState(void);
-
+void playWinningTune(void);
 
 #define COLS 8
 #define ROWS 5
@@ -22,8 +22,8 @@ void checkGameState(void);
 #define BTN_PIN 5
 
 #define BRIGHTNESS 4
-/*
 
+/*
 MATRIX SCANNING TIMINGS:
 
         FRAME:
@@ -36,5 +36,4 @@ MATRIX SCANNING TIMINGS:
                 time per step: 14us
                 step frequency: ~71.25kHz
                 gamma corrected levels: 0, 1, 2, 4, 6, 9, 16, 18
-
 */
