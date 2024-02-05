@@ -2,7 +2,7 @@
 
 uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
-uint8_t gammaValues[8];
+uint8_t gammaValues[8], gameOn;
 
 int main(void) {
         mcuInit();
@@ -10,6 +10,7 @@ int main(void) {
 
         uint8_t sequencer = 0;
 
+        gameOn = 1;
         createNewLevel();
 
         while(1) {
@@ -144,8 +145,20 @@ void updateFrameBuffer(void) {
 }
 
 void checkGameState(void) {
-        // Check if game has ended -- all LEDS out!
-        // Play sound if user won
+        // Check if any light is on...
+        for (int col = 0; col < 8; col++) {
+                for (int row = 0; row < 5; row++) {
+                        if (targetState[col][row] > 0)
+                                return;
+                }
+        }
+
+        // If still here, no light is on: Well done!
+        playWinningTune();
+        gameOn = 0;
+}
+
+void playWinningTune(void) {
 }
 
 void testLedMatrix(void) {
