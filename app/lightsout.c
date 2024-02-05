@@ -82,7 +82,7 @@ void scanSwitchMatrix(void) {
 
         // set all pins as inputs and enable pull-up resistors
         // used for reading state of switches in a row
-        PORTB = 0b11111111;
+        PORTD = 0b11111111;
         DDRD  = 0b00000000;
 
         for (row = 0; row < 5; row++) {
