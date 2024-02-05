@@ -1,7 +1,7 @@
 #include "lightsout.h"
 
-uint8_t currentState[COLS][ROWS];
-uint8_t targetState[COLS][ROWS];
+uint8_t ledMatrixState[COLS][ROWS];
+uint8_t gameState[COLS][ROWS];
 uint8_t gammaValues[8], gameOn;
 
 int main(void) {
@@ -55,7 +55,7 @@ void updateLedMatrix(void) {
                         // according to current step and brightness level
                         tmpVal = 0b00000000;
                         for (col = 0; col < 8; col++) {
-                                if (step < gammaValues[currentState[col][row]]) {
+                                if (step < gammaValues[ledMatrixState[col][row]]) {
                                         tmpVal |= 1 << col;
                                 }
                         }
@@ -111,12 +111,12 @@ void scanSwitchMatrix(void) {
 void applyPatternOn(uint8_t x, uint8_t y) {
         // TODO:
         // Apply one of three patterns around selected LED
-        // modification will be applied on targetState[][]
+        // modification will be applied on gameState[][]
 }
 
 void checkMainButton(void) {
         // If game has ended and button was pressed,
-        // create new level in targetState[][]
+        // create new level in gameState[][]
 }
 
 void createNewLevel(void) {
@@ -125,21 +125,21 @@ void createNewLevel(void) {
         for (int col = 0; col < 8; col++) {
                 for (int row = 0; row < 5; row++) {
                         if (col & 1)
-                                targetState[col][row] = BRIGHTNESS;
+                                gameState[col][row] = BRIGHTNESS;
                 }
         }
 }
 
 void updateFrameBuffer(void) {
-        // Update currentState[][] according to targetState[][]
+        // Update ledMatrixState[][] according to gameState[][]
         for (int col = 0; col < 8; col++) {
                 for (int row = 0; row < 5; row++) {
                         // fade in...
-                        if (currentState[col][row] < targetState[col][row])
-                                currentState[col][row]++;
+                        if (ledMatrixState[col][row] < gameState[col][row])
+                                ledMatrixState[col][row]++;
                         // fade out...
-                        if (currentState[col][row] > targetState[col][row])
-                                currentState[col][row]--;
+                        if (ledMatrixState[col][row] > gameState[col][row])
+                                ledMatrixState[col][row]--;
                 }
         }
 }
@@ -148,7 +148,7 @@ void checkGameState(void) {
         // Check if any light is on...
         for (int col = 0; col < 8; col++) {
                 for (int row = 0; row < 5; row++) {
-                        if (targetState[col][row] > 0)
+                        if (gameState[col][row] > 0)
                                 return;
                 }
         }
@@ -211,8 +211,8 @@ void appInit (void) {
 
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {
-                        currentState[col][row] = 0;
-                        targetState[col][row] = 0;
+                        ledMatrixState[col][row] = 0;
+                        gameState[col][row] = 0;
                 }
         }
 }
