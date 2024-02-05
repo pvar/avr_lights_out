@@ -2,7 +2,7 @@
 
 uint8_t currentState[COLS][ROWS];
 uint8_t targetState[COLS][ROWS];
-uint8_t gammaValues[5];
+uint8_t gammaValues[8];
 
 int main(void) {
         mcuInit();
@@ -49,26 +49,26 @@ void updateLedMatrix(void) {
                 PORTC = 1 << row;
 
                 // go through steps
-                for (step = 0; step < 228; step++) {
+                for (step = 0; step < 114; step++) {
                         // switch on/off every column of selected row
                         // according to current step and brightness level
                         tmpVal = 0b00000000;
                         for (col = 0; col < 8; col++) {
-                                if (step < currentState[col][row]) {
+                                if (step < gammaValues[currentState[col][row]]) {
                                         tmpVal |= 1 << col;
                                 }
                         }
                         PORTD = tmpVal;
 
-                        // assuming that each iteration takes 5us,
-                        // we add 2us to reach desired period (~7us)
-                        _delay_us(2);
+                        // assuming that each iteration takes 8us,
+                        // we add 6us to reach desired period (~14us)
+                        _delay_us(6);
                 }
         }
 
-        // we only had 2us, for the last step of the last row
-        // so, we have to add 5us to reach desired period (~7us)
-        _delay_us(5);
+        // we only spent 6us for the last step of the last row
+        // so, we have to add 8us to reach desired period (~14us)
+        _delay_us(8);
         PORTC = 0;
 }
 
@@ -193,6 +193,8 @@ void appInit (void) {
         gammaValues[3] = 4;
         gammaValues[4] = 6;
         gammaValues[5] = 9;
+        gammaValues[6] = 16;
+        gammaValues[7] = 28;
 
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {

@@ -14,12 +14,14 @@ void createNewLevel(void);
 void updateFrameBuffer(void);
 void checkGameState(void);
 
+
 #define COLS 8
 #define ROWS 5
 
 #define SPK_PIN 5
 #define BTN_PIN 5
 
+#define BRIGHTNESS 4
 /*
 
 MATRIX SCANNING TIMINGS:
@@ -30,9 +32,9 @@ MATRIX SCANNING TIMINGS:
                 time fow line: 1.6ms
 
         LINE:
-                steps: 228
-                time per step: ~7us
-                step frequency: ~142.5kHz
-                gamma corrected levels: 0, 1, 2, 4, 6, 9
+                steps: 114
+                time per step: 14us
+                step frequency: ~71.25kHz
+                gamma corrected levels: 0, 1, 2, 4, 6, 9, 16, 18
 
 */
