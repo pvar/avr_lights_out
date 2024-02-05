@@ -10,6 +10,8 @@ int main(void) {
 
         uint8_t sequencer = 0;
 
+        createNewLevel();
+
         while(1) {
                 sequencer++;
                 updateLedMatrix();
@@ -117,11 +119,28 @@ void checkMainButton(void) {
 }
 
 void createNewLevel(void) {
-        // Create new level in targetState[][]
+        // Added for testing purposes!
+        // Will be replaced by proper implementation.
+        for (int col = 0; col < 8; col++) {
+                for (int row = 0; row < 5; row++) {
+                        if (col & 1)
+                                targetState[col][row] = BRIGHTNESS;
+                }
+        }
 }
 
 void updateFrameBuffer(void) {
-        // Update currentState[][] based on contents of targetState[][]
+        // Update currentState[][] according to targetState[][]
+        for (int col = 0; col < 8; col++) {
+                for (int row = 0; row < 5; row++) {
+                        // fade in...
+                        if (currentState[col][row] < targetState[col][row])
+                                currentState[col][row]++;
+                        // fade out...
+                        if (currentState[col][row] > targetState[col][row])
+                                currentState[col][row]--;
+                }
+        }
 }
 
 void checkGameState(void) {
