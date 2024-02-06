@@ -104,8 +104,8 @@ void scanSwitchMatrix(void) {
 
                 for (col = 0; col < COLS; col++) {
                         if ((PIND & (1 << col)) == 0) {
-                                // the switch at row ROW and column COL is pressed
-                                applyPatternOn(col, row);
+                                // the switch at row 'row' and column 'col' is pressed
+                                applyPatternOnMatrix(col, row);
                                 deBounceDelay = 5;
                                 // ignore any other pressed switches for now
                                 exit = 1;
@@ -121,10 +121,42 @@ void scanSwitchMatrix(void) {
         }
 }
 
-void applyPatternOn(uint8_t x, uint8_t y) {
-        // TODO:
-        // Apply one of three patterns around selected LED
-        // modification will be applied on gameState[][]
+void applyPatternOnMatrix(uint8_t x, uint8_t y) {
+
+        // apply on same row
+        applyPatternOnRow(x, y, patternThis[mode]);
+
+        // row 0 is the top most
+        if (y > 0) {
+                // apply on row above
+                applyPatternOnRow(x, y - 1, patternAbove[mode]);
+        }
+
+        // row 5 (index 4) is the lower most
+        if (y < 4) {
+                // apply on row below
+                applyPatternOnRow(x, y + 1, patternBelow[mode]);
+        }
+}
+
+void applyPatternOnRow(uint8_t x, uint8_t y, uint8_t pattern) {
+        // bit 0 is the least significant -- left-most side
+        if  (x > 0) {
+                // check previous bit
+                if (pattern & 0b00000100)
+                        gameState[x-1][y] = BRIGHTNESS - gameState[x-1][y];
+        }
+
+        // bit 7 is the most significant -- right-most side
+        if  (x < 6) {
+                // check next bit
+                if (pattern & 0b00000001)
+                        gameState[x+1][y] = BRIGHTNESS - gameState[x+1][y];
+        }
+
+        // check this bit
+        if (pattern & 0b00000010)
+                gameState[x][y] = BRIGHTNESS - gameState[x][y];
 }
 
 void checkMainButton(void) {
@@ -221,6 +253,20 @@ void appInit (void) {
         gammaValues[5] = 9;
         gammaValues[6] = 16;
         gammaValues[7] = 28;
+
+        patternAbove[0] = 0b00000010;
+        patternThis[0]  = 0b00000111;
+        patternBelow[0] = 0b00000010;
+
+        patternAbove[1] = 0b00000101;
+        patternThis[1]  = 0b00000010;
+        patternBelow[1] = 0b00000101;
+
+        patternAbove[2] = 0b00000101;
+        patternThis[2]  = 0b00000010;
+        patternBelow[2] = 0b00000011;
+
+        mode = 0;
 
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {

@@ -8,7 +8,8 @@ void appInit (void);
 void testLedMatrix(void);
 void updateLedMatrix(void);
 void scanSwitchMatrix(void);
-void applyPatternOn(uint8_t x, uint8_t y);
+void applyPatternOnMatrix(uint8_t x, uint8_t y);
+void applyPatternOnRow(uint8_t x, uint8_t y, uint8_t pattern);
 void checkMainButton(void);
 void createNewLevel(void);
 void updateFrameBuffer(void);
@@ -36,4 +37,27 @@ MATRIX SCANNING TIMINGS:
                 time per step: 14us
                 step frequency: ~71.25kHz
                 gamma corrected levels: 0, 1, 2, 4, 6, 9, 16, 18
+
+GAME PATTERNS:
+
+        PATTERN 1
+                patternAbove[0] = 0b00000010        -  T  -
+                patternThis[0]  = 0b00000111        T  T  T
+                patternBelow[0] = 0b00000010        -  T  -
+
+        PATTERN 2
+                patternAbove[1] = 0b00000101        T  -  T
+                patternThis[1]  = 0b00000010        -  T  -
+                patternBelow[1] = 0b00000101        T  -  T
+
+        PATTERN 3
+                patternAbove[2] = 0b00000101        T  -  T
+                patternThis[2]  = 0b00000010        -  T  -
+                patternBelow[2] = 0b00000011        -  T  T
+
+DIFFICULTY:
+
+        EASY:  mode = 0
+        HARD:  mode = 1
+        DEVIL: mode = 2
 */
