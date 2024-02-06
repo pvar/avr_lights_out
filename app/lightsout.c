@@ -3,15 +3,20 @@
 uint8_t ledMatrixState[COLS][ROWS];
 uint8_t gameState[COLS][ROWS];
 uint8_t gammaValues[8], gameOn;
+uint8_t patternAbove[3];
+uint8_t patternBelow[3];
+uint8_t patternThis[3];
+uint8_t mode;
 
 int main(void) {
         mcuInit();
         appInit();
 
-        uint8_t sequencer = 0;
 
         gameOn = 1;
         createNewLevel();
+
+        uint8_t sequencer = 0;
 
         while(1) {
                 sequencer++;
@@ -44,7 +49,7 @@ void updateLedMatrix(void) {
         DDRD = 0b11111111;
 
         // scan rows
-        for (row = 0; row < 5; row++) {
+        for (row = 0; row < ROWS; row++) {
                 // switch row after turning all columns off, to avoid ghosting
                 PORTD = 0;
                 PORTC = 1 << row;
@@ -54,7 +59,7 @@ void updateLedMatrix(void) {
                         // switch on/off every column of selected row
                         // according to current step and brightness level
                         tmpVal = 0b00000000;
-                        for (col = 0; col < 8; col++) {
+                        for (col = 0; col < COLS; col++) {
                                 if (step < gammaValues[ledMatrixState[col][row]]) {
                                         tmpVal |= 1 << col;
                                 }
@@ -74,7 +79,12 @@ void updateLedMatrix(void) {
 }
 
 void scanSwitchMatrix(void) {
-        uint8_t row, col, exit = 0;
+        static uint8_t deBounceDelay = 0;
+
+        if (deBounceDelay > 0) {
+                deBounceDelay--;
+                return;
+        }
 
         // set first 5 pins as outputs and enable pull-up resistors
         // used for enabling/disabling switches in a row
@@ -86,14 +96,17 @@ void scanSwitchMatrix(void) {
         PORTD = 0b11111111;
         DDRD  = 0b00000000;
 
-        for (row = 0; row < 5; row++) {
+        uint8_t row, col, exit = 0;
+        for (row = 0; row < ROWS; row++) {
                 // enable switches of row
                 PORTB &= ~(1 << row);
+                _delay_us(1);
 
-                for (col = 0; col < 8; col++) {
-                        if ((PINB & (1 << col)) == 0) {
+                for (col = 0; col < COLS; col++) {
+                        if ((PIND & (1 << col)) == 0) {
                                 // the switch at row ROW and column COL is pressed
                                 applyPatternOn(col, row);
+                                deBounceDelay = 5;
                                 // ignore any other pressed switches for now
                                 exit = 1;
                                 break;
@@ -122,8 +135,8 @@ void checkMainButton(void) {
 void createNewLevel(void) {
         // Added for testing purposes!
         // Will be replaced by proper implementation.
-        for (int col = 0; col < 8; col++) {
-                for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < COLS; col++) {
+                for (int row = 0; row < ROWS; row++) {
                         if (col & 1)
                                 gameState[col][row] = BRIGHTNESS;
                 }
@@ -132,8 +145,8 @@ void createNewLevel(void) {
 
 void updateFrameBuffer(void) {
         // Update ledMatrixState[][] according to gameState[][]
-        for (int col = 0; col < 8; col++) {
-                for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < COLS; col++) {
+                for (int row = 0; row < ROWS; row++) {
                         // fade in...
                         if (ledMatrixState[col][row] < gameState[col][row])
                                 ledMatrixState[col][row]++;
@@ -146,8 +159,8 @@ void updateFrameBuffer(void) {
 
 void checkGameState(void) {
         // Check if any light is on...
-        for (int col = 0; col < 8; col++) {
-                for (int row = 0; row < 5; row++) {
+        for (int col = 0; col < COLS; col++) {
+                for (int row = 0; row < ROWS; row++) {
                         if (gameState[col][row] > 0)
                                 return;
                 }
@@ -162,9 +175,9 @@ void playWinningTune(void) {
 }
 
 void testLedMatrix(void) {
-        for (int row = 0; row < 5; row++) {
+        for (int row = 0; row < ROWS; row++) {
                 PORTC = 1 << row;
-                for (int col = 0; col < 8; col++) {
+                for (int col = 0; col < COLS; col++) {
                         PORTD = 1 << col;
                         _delay_ms(128);
                 }
