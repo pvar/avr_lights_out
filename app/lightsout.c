@@ -2,19 +2,15 @@
 
 uint8_t ledMatrixState[COLS][ROWS];
 uint8_t gameState[COLS][ROWS];
-uint8_t gammaValues[8], gameOn;
+uint8_t gammaValues[8];
 uint8_t patternAbove[3];
 uint8_t patternBelow[3];
 uint8_t patternThis[3];
-uint8_t mode;
+uint8_t mode, gameOn;
 
 int main(void) {
         mcuInit();
         appInit();
-
-
-        gameOn = 1;
-        createNewLevel();
 
         uint8_t sequencer = 0;
 
@@ -227,6 +223,15 @@ void testLedMatrix(void) {
         PORTC = 0;
 }
 
+void clearGame (void) {
+        for (int col = 0; col < COLS; col++) {
+                for (int row = 0; row < ROWS; row++) {
+                        ledMatrixState[col][row] = 0;
+                        gameState[col][row] = 0;
+                }
+        }
+}
+
 void mcuInit (void) {
         // speaker and led matrix rows (through transistor array)
         DDRC = 0b00111111;
@@ -276,12 +281,11 @@ void appInit (void) {
         patternThis[2]  = 0b00000010;
         patternBelow[2] = 0b00000011;
 
-        mode = 0;
+        playInitTune();
 
-        for (int col = 0; col < COLS; col++) {
-                for (int row = 0; row < ROWS; row++) {
-                        ledMatrixState[col][row] = 0;
-                        gameState[col][row] = 0;
-                }
-        }
+        clearGame();
+        createNewLevel();
+
+        mode = 0;
+        gameOn = 1;
 }

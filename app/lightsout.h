@@ -5,6 +5,7 @@
 
 void mcuInit (void);
 void appInit (void);
+void clearGame (void);
 void testLedMatrix(void);
 void updateLedMatrix(void);
 void scanSwitchMatrix(void);
