@@ -15,6 +15,9 @@ void createNewLevel(void);
 void updateFrameBuffer(void);
 void checkGameState(void);
 void playWinningTune(void);
+void playStartTune(void);
+void playRestartTune(void);
+void playInitTune(void);
 
 #define COLS 8
 #define ROWS 5

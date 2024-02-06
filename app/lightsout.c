@@ -199,12 +199,22 @@ void checkGameState(void) {
         }
 
         // If still here, no light is on: Well done!
-        playWinningTune();
+        playVictoryTune();
         gameOn = 0;
 }
 
-void playWinningTune(void) {
+void playVictoryTune(void) {
 }
+
+void playStartTune(void) {
+}
+
+void playRestartTune(void) {
+}
+
+void playInitTune(void) {
+}
+
 
 void testLedMatrix(void) {
         for (int row = 0; row < ROWS; row++) {
