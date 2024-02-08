@@ -270,7 +270,7 @@ void testLedMatrix(void) {
         PORTC = 0;
 }
 
-void clearGame (void) {
+void clearGame(void) {
         for (int col = 0; col < COLS; col++) {
                 for (int row = 0; row < ROWS; row++) {
                         ledMatrixState[col][row] = 0;
@@ -279,7 +279,7 @@ void clearGame (void) {
         }
 }
 
-void mcuInit (void) {
+void mcuInit(void) {
         // speaker and led matrix rows (through transistor array)
         DDRC = 0b00111111;
         // mode indicator, main button and button matrix rows
@@ -305,7 +305,7 @@ void mcuInit (void) {
         //out MCUCR, tmp
 }
 
-void appInit (void) {
+void appInit(void) {
         // brightness levels for smooth fading
         gammaValues[0] = 0;
         gammaValues[1] = 1;
