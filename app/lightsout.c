@@ -144,7 +144,7 @@ void applyPatternOnRow(uint8_t x, uint8_t y, uint8_t pattern) {
         }
 
         // bit 7 is the most significant -- right-most side
-        if  (x < 6) {
+        if  (x < 7) {
                 // check next bit
                 if (pattern & 0b00000001)
                         gameState[x+1][y] = BRIGHTNESS - gameState[x+1][y];
