@@ -316,9 +316,9 @@ void appInit(void) {
         gammaValues[6] = 16;
         gammaValues[7] = 28;
 
-        patternAbove[0] = 0b00000010;
+        patternAbove[0] = 0b00000000;
         patternThis[0]  = 0b00000111;
-        patternBelow[0] = 0b00000010;
+        patternBelow[0] = 0b00000000;
 
         patternAbove[1] = 0b00000101;
         patternThis[1]  = 0b00000010;

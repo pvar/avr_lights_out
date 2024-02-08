@@ -43,9 +43,9 @@ MATRIX SCANNING TIMINGS:
 GAME PATTERNS:
 
         PATTERN 1
-                patternAbove[0] = 0b00000010        -  T  -
+                patternAbove[0] = 0b00000000        -  -  -
                 patternThis[0]  = 0b00000111        T  T  T
-                patternBelow[0] = 0b00000010        -  T  -
+                patternBelow[0] = 0b00000000        -  -  -
 
         PATTERN 2
                 patternAbove[1] = 0b00000101        T  -  T
