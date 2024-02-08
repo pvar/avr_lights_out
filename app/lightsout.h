@@ -15,19 +15,17 @@ void checkMainButton(void);
 void createNewLevel(void);
 void updateFrameBuffer(void);
 void checkGameState(void);
-void playWinningTune(void);
+void playVictoryTune(void);
 void playStartTune(void);
 void playRestartTune(void);
 void playInitTune(void);
 
 #define COLS 8
 #define ROWS 5
-
 #define SPK_PIN 5
 #define BTN_PIN 5
-
 #define BRIGHTNESS 4
-
+#define DEBOUNCE 6
 /*
 MATRIX SCANNING TIMINGS:
 

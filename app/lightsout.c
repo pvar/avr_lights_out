@@ -38,8 +38,8 @@ void updateLedMatrix(void) {
         uint8_t row, col, step, tmpVal;
 
         // set first 5 pins to Hi-z state
-        DDRB  &= 0b11100000;
         PORTB &= 0b11100000;
+        DDRB  &= 0b11000000;
 
         // set all pins as outputs for driving the led matrix
         DDRD = 0b11111111;
@@ -84,7 +84,7 @@ void scanSwitchMatrix(void) {
 
         // set first 5 pins as outputs and enable pull-up resistors
         // used for enabling/disabling switches in a row
-        PORTB |= 0b00011111;
+        PORTB |= 0b00111111;
         DDRB  |= 0b00011111;
 
         // set all pins as inputs and enable pull-up resistors
@@ -102,7 +102,7 @@ void scanSwitchMatrix(void) {
                         if ((PIND & (1 << col)) == 0) {
                                 // the switch at row 'row' and column 'col' is pressed
                                 applyPatternOnMatrix(col, row);
-                                deBounceDelay = 5;
+                                deBounceDelay = DEBOUNCE;
                                 // ignore any other pressed switches for now
                                 exit = 1;
                                 break;
@@ -156,8 +156,55 @@ void applyPatternOnRow(uint8_t x, uint8_t y, uint8_t pattern) {
 }
 
 void checkMainButton(void) {
-        // If game has ended and button was pressed,
-        // create new level in gameState[][]
+        static uint8_t pressDuration = 0;
+        static uint8_t deBounceDelay = 0;
+
+        // setup button pin
+        // this is probably already taken care of, but you never know
+        PINB  &= ~(1<<BTN_PIN);
+        PORTB |=  (1<<BTN_PIN);
+
+        if (deBounceDelay > 0) {
+                deBounceDelay--;
+                if (!(PINB & (1<<BTN_PIN)))
+                        pressDuration++;
+                return;
+        }
+
+        // check if button was pressed (pin grounded)
+        if (pressDuration == 0 && !(PINB & (1<<BTN_PIN))) {
+                deBounceDelay = DEBOUNCE;
+                pressDuration = 1;
+                return;
+        }
+
+        if (pressDuration >= DEBOUNCE) {
+                // duration of key-press: long
+
+                // start or restart game
+                if (gameOn == 0)
+                        playStartTune();
+                else
+                        playRestartTune();
+
+                clearGame();
+                createNewLevel();
+                gameOn = 1;
+        } else if (pressDuration > 0) {
+                // duration of key-press: short
+
+                // set game mode (difficulty)
+                if (mode < 2)
+                        mode++;
+                else
+                        mode = 0;
+
+                // update leds
+                PORTB &= 0b00111111;
+                PORTB |= (mode + 1) << 6;
+        }
+
+        pressDuration = 0;
 }
 
 void createNewLevel(void) {
@@ -237,7 +284,7 @@ void mcuInit (void) {
         DDRC = 0b00111111;
         // mode indicator, main button and button matrix rows
         DDRB  = 0b11000000;
-        PORTB = 0b11100000;
+        PORTB = 0b01100000;
         // this will be constantly changing
         // - input for reading the button matrix
         // - output for driving the led matrix
